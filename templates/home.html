@@ -1,0 +1,311 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<style>
+    .hero {
+        background: linear-gradient(rgba(165, 42, 42, 0.8), rgba(139, 69, 19, 0.7)), 
+                    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23F5F5DC"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23C19A6B" stroke-width="0.5" stroke-opacity="0.1"/></svg>');
+        background-size: cover;
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        color: white;
+        margin: 1rem auto 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        max-width: 900px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, transparent, #C19A6B, transparent);
+    }
+    
+    .hero h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        font-weight: 300;
+        line-height: 1.7;
+    }
+    
+    .categories {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin: 3rem 0;
+        flex-wrap: wrap;
+    }
+    
+    .category-btn {
+        position: relative;
+        background: linear-gradient(to bottom right, #A52A2A, #8B4513);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        padding: 1.5rem 3rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        min-width: 220px;
+        letter-spacing: 1px;
+    }
+    
+    .category-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
+    
+    .category-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .category-btn:hover::before {
+        left: 100%;
+    }
+    
+    .category-btn.food::after {
+        content: "🍝";
+        position: absolute;
+        right: -15px;
+        top: -15px;
+        font-size: 2.5rem;
+        opacity: 0.7;
+    }
+    
+    .category-btn.drink::after {
+        content: "☕";
+        position: absolute;
+        right: -15px;
+        top: -15px;
+        font-size: 2.5rem;
+        opacity: 0.7;
+    }
+    
+    .user-section {
+        background: #F5F5DC;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 3rem auto;
+        max-width: 700px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-top: 3px solid #A52A2A;
+        text-align: center;
+    }
+    
+    .user-section p {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        color: #3D2B1F;
+    }
+    
+    .user-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .user-link {
+        background: linear-gradient(to bottom right, #C19A6B, #8B4513);
+        color: white;
+        text-decoration: none;
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    .user-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .user-link i {
+        font-size: 1.2rem;
+    }
+    
+    .guest-message {
+        background: #F5F5DC;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 3rem auto;
+        max-width: 700px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-top: 3px solid #A52A2A;
+        text-align: center;
+    }
+    
+    .guest-message p {
+        font-size: 1.2rem;
+        color: #3D2B1F;
+        margin-bottom: 1.5rem;
+    }
+    
+    .guest-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .guest-link {
+        background: linear-gradient(to bottom right, #A52A2A, #8B4513);
+        color: white;
+        text-decoration: none;
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    .guest-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .decorative {
+        text-align: center;
+        margin: 3rem 0;
+    }
+    
+    .decorative i {
+        font-size: 2.5rem;
+        color: #8B4513;
+        margin: 0 1rem;
+        opacity: 0.7;
+    }
+    
+    @media (max-width: 768px) {
+        .hero {
+            padding: 2rem 1.5rem;
+        }
+        
+        .hero h2 {
+            font-size: 2.2rem;
+        }
+        
+        .categories {
+            gap: 1.5rem;
+        }
+        
+        .category-btn {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .user-links, .guest-links {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero h2 {
+            font-size: 1.8rem;
+        }
+        
+        .category-btn {
+            width: 100%;
+            max-width: 280px;
+        }
+    }
+</style>
+
+<div class="hero">
+    <h2>Selamat Datang di Ragazza Cafe!</h2>
+    <p>Nikmati pengalaman kafe Italia autentik dengan aroma kopi segar dan hidangan lezat buatan tangan. Setiap hidangan kami dibuat dengan cinta dan bahan-bahan pilihan terbaik.</p>
+</div>
+
+<div class="decorative">
+    <i class="fas fa-coffee"></i>
+    <i class="fas fa-bread-slice"></i>
+    <i class="fas fa-utensils"></i>
+    <i class="fas fa-wine-glass-alt"></i>
+</div>
+
+<p style="text-align: center; font-size: 1.4rem; color: #3D2B1F; margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">
+    Silakan pilih kategori menu:
+</p>
+
+<div class="categories">
+    <a href="{% url 'menu_list' %}?category=Makanan">
+        <button class="category-btn food">Makanan</button>
+    </a>
+    <a href="{% url 'menu_list' %}?category=Minuman">
+        <button class="category-btn drink">Minuman</button>
+    </a>
+</div>
+
+{% if user.is_authenticated %}
+<div class="user-section">
+    <p>Halo, <span style="font-weight: 700; color: #A52A2A;">{{ user.email }}</span>! Selamat menikmati pengalaman di Ragazza Cafe.</p>
+    
+    <div class="user-links">
+        <a href="{% url 'cart' %}" class="user-link">
+            <i class="fas fa-shopping-cart"></i> Lihat Keranjang
+        </a>
+        <a href="{% url 'favorites' %}" class="user-link">
+            <i class="fas fa-heart"></i> Menu Favorit
+        </a>
+    </div>
+</div>
+{% else %}
+<div class="guest-message">
+    <p>Bergabunglah dengan komunitas kami untuk mulai memesan dan menikmati berbagai keuntungan eksklusif!</p>
+    
+    <div class="guest-links">
+        <a href="{% url 'account_login' %}" class="guest-link">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a href="{% url 'account_signup' %}" class="guest-link">
+            <i class="fas fa-user-plus"></i> Daftar
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<div class="decorative" style="margin-top: 4rem;">
+    <i class="fas fa-leaf"></i>
+    <i class="fas fa-mug-hot"></i>
+    <i class="fas fa-cheese"></i>
+    <i class="fas fa-ice-cream"></i>
+</div>
+{% endblock %}

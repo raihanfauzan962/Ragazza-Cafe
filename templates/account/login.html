@@ -1,0 +1,328 @@
+{% extends "_base.html" %}
+{% block title %}Log In{% endblock title %}
+
+{% block content %}
+<style>
+    .login-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+    }
+    
+    .login-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .login-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .decorative {
+        margin: 1rem 0;
+        color: #C19A6B;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .login-form {
+        background: #F5F5DC;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #3D2B1F;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #C19A6B;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        background: white;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #A52A2A;
+        box-shadow: 0 0 0 3px rgba(165, 42, 42, 0.1);
+    }
+    
+    .helptext {
+        font-size: 0.85rem;
+        color: #777;
+        margin-top: 0.3rem;
+        font-style: italic;
+    }
+    
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0 0 0;
+    }
+    
+    .errorlist li {
+        color: #C62828;
+        font-size: 0.9rem;
+        background: rgba(244, 67, 54, 0.1);
+        padding: 0.5rem;
+        border-radius: 5px;
+        margin-bottom: 0.3rem;
+        border-left: 3px solid #F44336;
+    }
+    
+    .login-btn {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .login-btn:active {
+        transform: translateY(-1px);
+    }
+    
+    .additional-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #E0E0E0;
+    }
+    
+    .additional-links a {
+        color: #A52A2A;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .additional-links a:hover {
+        color: #8B4513;
+        text-decoration: underline;
+    }
+    
+    .welcome-text {
+        text-align: center;
+        color: #3D2B1F;
+        font-style: italic;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    /* Message styling to match the detail page */
+    .message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 400px;
+    }
+    
+    .message {
+        padding: 1.2rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateX(120%);
+        animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 2.5s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-message {
+        background: white;
+        color: #2E7D32;
+        border-left: 5px solid #4CAF50;
+    }
+    
+    .error-message {
+        background: white;
+        color: #C62828;
+        border-left: 5px solid #F44336;
+    }
+    
+    @keyframes slideIn {
+        to {
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(0) scale(0.95);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .login-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .login-header h2 {
+            font-size: 2.3rem;
+        }
+        
+        .login-form {
+            padding: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .login-header h2 {
+            font-size: 2rem;
+        }
+        
+        .decorative {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {% if 'success' in message.tags %}
+                    <i class="fas fa-check-circle"></i>
+                {% elif 'error' in message.tags %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
+                <div class="message-content">
+                    <div class="message-title">
+                        {% if 'success' in message.tags %}Sukses!{% elif 'error' in message.tags %}Error!{% endif %}
+                    </div>
+                    <div class="message-text">{{ message }}</div>
+                </div>
+                <button class="close-message">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="login-container">
+    <div class="login-header">
+        <h2>Masuk</h2>
+        <div class="decorative">
+            <i class="fas fa-utensils"></i>
+            <i class="fas fa-coffee"></i>
+            <i class="fas fa-bread-slice"></i>
+            <i class="fas fa-wine-bottle"></i>
+        </div>
+        <p class="welcome-text">Selamat datang kembali! Silakan masuk ke akun Anda.</p>
+    </div>
+    
+    <div class="login-form">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            <button class="login-btn" type="submit">
+                <i class="fas fa-sign-in-alt"></i> Masuk
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Auto-close messages after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto close messages after 3 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.message').forEach(function(message) {
+                message.style.display = 'none';
+            });
+        }, 3000);
+        
+        // Close button functionality
+        document.querySelectorAll('.close-message').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.closest('.message').style.display = 'none';
+            });
+        });
+    });
+</script>
+{% endblock content %}

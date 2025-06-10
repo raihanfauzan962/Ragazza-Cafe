@@ -1,0 +1,294 @@
+{% extends '_base.html' %}
+{% block content %}
+<style>
+    .checkout-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .checkout-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .checkout-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .decorative {
+        margin: 1rem 0;
+        color: #C19A6B;
+    }
+    
+    .decorative i {
+        margin: 0 1rem;
+        font-size: 1.5rem;
+    }
+    
+    .checkout-form {
+        background: #F5F5DC;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #3D2B1F;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .form-group input, 
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #C19A6B;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        background: white;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #A52A2A;
+        box-shadow: 0 0 0 3px rgba(165, 42, 42, 0.1);
+    }
+    
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-group .helptext {
+        font-size: 0.9rem;
+        color: #777;
+        margin-top: 0.3rem;
+        font-style: italic;
+    }
+    
+    .form-group .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0 0 0;
+    }
+    
+    .form-group .errorlist li {
+        color: #C62828;
+        font-size: 0.9rem;
+        background: rgba(244, 67, 54, 0.1);
+        padding: 0.5rem;
+        border-radius: 5px;
+        margin-bottom: 0.3rem;
+        border-left: 3px solid #F44336;
+    }
+    
+    .submit-order {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1.2rem 2.5rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 2rem auto 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        min-width: 250px;
+    }
+    
+    .submit-order:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .submit-order:active {
+        transform: translateY(-1px);
+    }
+    
+    .submit-order i {
+        margin-right: 0.8rem;
+        font-size: 1.2rem;
+    }
+    
+    /* Enhanced form styling for Django forms */
+    .checkout-form p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .checkout-form p label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #3D2B1F;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .checkout-form p input,
+    .checkout-form p textarea,
+    .checkout-form p select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #C19A6B;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        background: white;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .checkout-form p input:focus,
+    .checkout-form p textarea:focus,
+    .checkout-form p select:focus {
+        outline: none;
+        border-color: #A52A2A;
+        box-shadow: 0 0 0 3px rgba(165, 42, 42, 0.1);
+    }
+    
+    /* Checkbox and radio button styling */
+    .checkout-form p input[type="checkbox"],
+    .checkout-form p input[type="radio"] {
+        width: auto;
+        margin-right: 0.5rem;
+        transform: scale(1.2);
+    }
+    
+    /* Form field grouping */
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .form-row .form-group {
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    /* Order summary section */
+    .order-summary {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #C19A6B;
+    }
+    
+    .order-summary h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: #3D2B1F;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .summary-item:last-child {
+        border-bottom: none;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #A52A2A;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid #C19A6B;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .checkout-header h2 {
+            font-size: 2.3rem;
+        }
+        
+        .checkout-container {
+            padding: 1.5rem;
+        }
+        
+        .form-row {
+            flex-direction: column;
+        }
+        
+        .form-row .form-group {
+            min-width: 100%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .checkout-header h2 {
+            font-size: 2rem;
+        }
+        
+        .checkout-container {
+            padding: 1rem;
+        }
+        
+        .submit-order {
+            min-width: 100%;
+        }
+    }
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h2>Checkout</h2>
+        <div class="decorative">
+            <i class="fas fa-shopping-cart"></i>
+            <i class="fas fa-credit-card"></i>
+            <i class="fas fa-shipping-fast"></i>
+            <i class="fas fa-check-circle"></i>
+        </div>
+    </div>
+    
+    <div class="checkout-form">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-order">
+                <i class="fas fa-paper-plane"></i> Buat Pesanan
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

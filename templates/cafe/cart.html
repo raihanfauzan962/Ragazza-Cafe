@@ -1,0 +1,386 @@
+{% extends '_base.html' %}
+{% block content %}
+<style>
+    .cart-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cart-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .cart-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .cart-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .decorative {
+        margin: 1rem 0;
+        color: #C19A6B;
+        font-size: 1.5rem;
+        letter-spacing: 1rem;
+    }
+    
+    .cart-items {
+        margin-bottom: 3rem;
+    }
+    
+    .cart-item {
+        background: #F5F5DC;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid #C19A6B;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .cart-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .item-icon {
+        background: linear-gradient(135deg, #A52A2A, #8B4513);
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .item-details {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .item-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .item-info {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .quantity-info {
+        background: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        border: 2px solid #C19A6B;
+        font-weight: 600;
+        color: #3D2B1F;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .quantity-info i {
+        color: #C19A6B;
+    }
+    
+    .subtotal {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #A52A2A;
+        background: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        border: 2px solid #A52A2A;
+    }
+    
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #F5F5DC;
+        border-radius: 15px;
+        margin-bottom: 3rem;
+    }
+    
+    .empty-cart i {
+        font-size: 4rem;
+        color: #C19A6B;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+    
+    .empty-cart h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: #3D2B1F;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-cart p {
+        color: #777;
+        font-style: italic;
+        font-size: 1.1rem;
+    }
+    
+    .cart-summary {
+        background: linear-gradient(135deg, #F5F5DC, #E8E8DC);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        border: 2px solid #C19A6B;
+    }
+    
+    .summary-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .summary-header h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: #3D2B1F;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+    
+    .summary-header h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(to right, #A52A2A, #C19A6B);
+    }
+    
+    .total-amount {
+        text-align: center;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .total-label {
+        font-size: 1.2rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .total-price {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #A52A2A;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .checkout-section {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .checkout-btn {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        min-width: 220px;
+        justify-content: center;
+    }
+    
+    .continue-shopping {
+        background: linear-gradient(to right, #C19A6B, #8B4513);
+        color: white;
+        border: none;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        min-width: 220px;
+        justify-content: center;
+    }
+    
+    .checkout-btn:hover,
+    .continue-shopping:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .checkout-btn i,
+    .continue-shopping i {
+        font-size: 1.4rem;
+    }
+    
+    @media (max-width: 768px) {
+        .cart-container {
+            padding: 1.5rem;
+        }
+        
+        .cart-header h2 {
+            font-size: 2.3rem;
+        }
+        
+        .cart-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .item-info {
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .checkout-section {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .checkout-btn,
+        .continue-shopping {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .cart-header h2 {
+            font-size: 2rem;
+        }
+        
+        .total-price {
+            font-size: 2rem;
+        }
+        
+        .item-info {
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+    }
+</style>
+
+<div class="cart-container">
+    <div class="cart-header">
+        <h2>Keranjang Belanja</h2>
+        <div class="decorative">
+            <i class="fas fa-shopping-cart"></i>
+            <i class="fas fa-utensils"></i>
+            <i class="fas fa-coffee"></i>
+            <i class="fas fa-heart"></i>
+        </div>
+    </div>
+    
+    {% if items %}
+        <div class="cart-items">
+            {% for entry in items %}
+                <div class="cart-item">
+                    <div class="item-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-name">{{ entry.item.name }}</div>
+                        <div class="item-info">
+                            <div class="quantity-info">
+                                <i class="fas fa-sort-numeric-up"></i>
+                                Jumlah: {{ entry.quantity }}
+                            </div>
+                            <div class="subtotal">
+                                Rp{{ entry.subtotal }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+            <div class="summary-header">
+                <h3>Ringkasan Pesanan</h3>
+            </div>
+            <div class="total-amount">
+                <div class="total-label">Total Pembayaran</div>
+                <div class="total-price">Rp{{ total }}</div>
+            </div>
+            <div class="checkout-section">
+                <a href="{% url 'checkout' %}" class="checkout-btn">
+                    <i class="fas fa-credit-card"></i> Lanjut ke Pembayaran
+                </a>
+                <a href="{% url 'menu_list' %}" class="continue-shopping">
+                    <i class="fas fa-arrow-left"></i> Lanjut Belanja
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Keranjang Belanja Kosong</h3>
+            <p>Belum ada menu yang ditambahkan ke keranjang. Mulai berbelanja sekarang!</p>
+        </div>
+        
+        <div class="checkout-section">
+            <a href="{% url 'menu_list' %}" class="continue-shopping">
+                <i class="fas fa-utensils"></i> Lihat Menu
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

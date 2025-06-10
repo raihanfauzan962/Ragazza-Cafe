@@ -1,0 +1,441 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<style>
+    .orders-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .orders-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .orders-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .orders-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .decorative {
+        margin: 1rem 0;
+        color: #C19A6B;
+        font-size: 1.5rem;
+        letter-spacing: 1rem;
+    }
+    
+    .orders-list {
+        margin-bottom: 3rem;
+    }
+    
+    .order-item {
+        background: linear-gradient(135deg, #F5F5DC, #E8E8DC);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid #C19A6B;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .order-item::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(165, 42, 42, 0.08), rgba(193, 154, 107, 0.08));
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .order-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .order-item:hover::before {
+        transform: scale(1.2);
+    }
+    
+    .order-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .order-number {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .order-icon {
+        background: linear-gradient(135deg, #A52A2A, #8B4513);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .order-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #3D2B1F;
+    }
+    
+    .order-date {
+        background: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: 2px solid #C19A6B;
+        font-size: 0.95rem;
+        color: #3D2B1F;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .order-date i {
+        color: #C19A6B;
+    }
+    
+    .order-details {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .table-info {
+        background: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: 25px;
+        border: 2px solid #C19A6B;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-weight: 600;
+        color: #3D2B1F;
+    }
+    
+    .table-info i {
+        color: #C19A6B;
+        font-size: 1.2rem;
+    }
+    
+    .status-badges {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .status-badge {
+        padding: 0.6rem 1.2rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .order-status {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+    }
+    
+    .order-status.pending {
+        background: linear-gradient(135deg, #FF9800, #f57c00);
+    }
+    
+    .order-status.cancelled {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+    }
+    
+    .payment-status {
+        background: linear-gradient(135deg, #2196F3, #1976D2);
+        color: white;
+    }
+    
+    .payment-status.unpaid {
+        background: linear-gradient(135deg, #FF5722, #d84315);
+    }
+    
+    .order-link {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        justify-content: center;
+        position: relative;
+        z-index: 2;
+        align-self: flex-start;
+    }
+    
+    .order-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .order-link i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .order-link:hover i {
+        transform: translateX(3px);
+    }
+    
+    .empty-orders {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #F5F5DC;
+        border-radius: 15px;
+        margin-bottom: 3rem;
+    }
+    
+    .empty-orders i {
+        font-size: 4rem;
+        color: #C19A6B;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+    
+    .empty-orders h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: #3D2B1F;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-orders p {
+        color: #777;
+        font-style: italic;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    
+    .action-section {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .browse-menu-btn {
+        background: linear-gradient(to right, #C19A6B, #8B4513);
+        color: white;
+        border: none;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        min-width: 220px;
+        justify-content: center;
+    }
+    
+    .browse-menu-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .browse-menu-btn i {
+        font-size: 1.4rem;
+    }
+    
+    @media (max-width: 768px) {
+        .orders-container {
+            padding: 1.5rem;
+        }
+        
+        .orders-header h2 {
+            font-size: 2.3rem;
+        }
+        
+        .order-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .order-details {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .status-badges {
+            justify-content: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .orders-header h2 {
+            font-size: 2rem;
+        }
+        
+        .order-item {
+            padding: 1.5rem;
+        }
+        
+        .browse-menu-btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .status-badges {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+
+<div class="orders-container">
+    <div class="orders-header">
+        <h2>Pesanan Saya</h2>
+        <div class="decorative">
+            <i class="fas fa-receipt"></i>
+            <i class="fas fa-clipboard-list"></i>
+            <i class="fas fa-utensils"></i>
+            <i class="fas fa-clock"></i>
+        </div>
+    </div>
+    
+    {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+                <div class="order-item">
+                    <div class="order-header">
+                        <div class="order-number">
+                            <div class="order-icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div class="order-title">Order #{{ order.id }}</div>
+                        </div>
+                        <div class="order-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            {{ order.created_at|date:"d M Y H:i" }}
+                        </div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="table-info">
+                            <i class="fas fa-table"></i>
+                            <span>Meja {{ order.table_number }}</span>
+                        </div>
+                        
+                        <div class="status-badges">
+                            <div class="status-badge order-status {% if order.order_status == 'pending' %}pending{% elif order.order_status == 'cancelled' %}cancelled{% endif %}">
+                                {% if order.order_status == 'completed' %}
+                                    <i class="fas fa-check-circle"></i>
+                                {% elif order.order_status == 'pending' %}
+                                    <i class="fas fa-clock"></i>
+                                {% elif order.order_status == 'cancelled' %}
+                                    <i class="fas fa-times-circle"></i>
+                                {% endif %}
+                                {{ order.order_status|title }}
+                            </div>
+                            
+                            <div class="status-badge payment-status {% if order.payment_status == 'unpaid' %}unpaid{% endif %}">
+                                {% if order.payment_status == 'paid' %}
+                                    <i class="fas fa-credit-card"></i>
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                {% endif %}
+                                {{ order.payment_status|title }}
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'order_detail' order.pk %}" class="order-link">
+                            <span>Lihat Detail</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="action-section">
+            <a href="{% url 'menu_list' %}" class="browse-menu-btn">
+                <i class="fas fa-plus-circle"></i> Pesan Lagi
+            </a>
+        </div>
+    {% else %}
+        <div class="empty-orders">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>Belum Ada Pesanan</h3>
+            <p>Anda belum memiliki riwayat pesanan.<br>
+            Mulai menjelajahi menu dan buat pesanan pertama Anda!</p>
+        </div>
+        
+        <div class="action-section">
+            <a href="{% url 'menu_list' %}" class="browse-menu-btn">
+                <i class="fas fa-utensils"></i> Lihat Menu
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

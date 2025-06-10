@@ -1,0 +1,328 @@
+{% extends "_base.html" %}
+
+{% block title %}Log Out{% endblock %}
+
+{% block content %}
+<style>
+    .logout-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+    }
+    
+    .logout-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .logout-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .logout-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .decorative {
+        margin: 1rem 0;
+        color: #C19A6B;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .logout-content {
+        background: #F5F5DC;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .confirmation-text {
+        color: #3D2B1F;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .logout-icon {
+        font-size: 4rem;
+        color: #C19A6B;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .logout-btn {
+        background: linear-gradient(to right, #C62828, #B71C1C);
+        color: white;
+        border: none;
+        padding: 1.2rem 2.5rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .logout-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(198, 40, 40, 0.3);
+    }
+    
+    .logout-btn:active {
+        transform: translateY(-1px);
+    }
+    
+    .cancel-btn {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1.2rem 2.5rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .cancel-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(165, 42, 42, 0.3);
+        text-decoration: none;
+        color: white;
+    }
+    
+    .cancel-btn:active {
+        transform: translateY(-1px);
+    }
+    
+    .farewell-message {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #E0E0E0;
+        color: #777;
+        font-style: italic;
+        font-size: 0.95rem;
+    }
+    
+    /* Message styling to match the detail page */
+    .message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 400px;
+    }
+    
+    .message {
+        padding: 1.2rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateX(120%);
+        animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 2.5s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-message {
+        background: white;
+        color: #2E7D32;
+        border-left: 5px solid #4CAF50;
+    }
+    
+    .error-message {
+        background: white;
+        color: #C62828;
+        border-left: 5px solid #F44336;
+    }
+    
+    @keyframes slideIn {
+        to {
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(0) scale(0.95);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .logout-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .logout-header h1 {
+            font-size: 2.3rem;
+        }
+        
+        .logout-content {
+            padding: 1.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logout-btn,
+        .cancel-btn {
+            width: 100%;
+            max-width: 280px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .logout-header h1 {
+            font-size: 2rem;
+        }
+        
+        .decorative {
+            font-size: 1rem;
+        }
+        
+        .logout-icon {
+            font-size: 3rem;
+        }
+        
+        .confirmation-text {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {% if 'success' in message.tags %}
+                    <i class="fas fa-check-circle"></i>
+                {% elif 'error' in message.tags %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
+                <div class="message-content">
+                    <div class="message-title">
+                        {% if 'success' in message.tags %}Sukses!{% elif 'error' in message.tags %}Error!{% endif %}
+                    </div>
+                    <div class="message-text">{{ message }}</div>
+                </div>
+                <button class="close-message">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="logout-container">
+    <div class="logout-header">
+        <h1>Keluar</h1>
+        <div class="decorative">
+            <i class="fas fa-utensils"></i>
+            <i class="fas fa-coffee"></i>
+            <i class="fas fa-bread-slice"></i>
+            <i class="fas fa-wine-bottle"></i>
+        </div>
+    </div>
+    
+    <div class="logout-content">
+        <div class="logout-icon">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+        
+        <p class="confirmation-text">
+            Apakah Anda yakin ingin keluar dari akun Anda?<br>
+            <small style="color: #777; font-size: 0.9rem;">Anda akan perlu masuk kembali untuk mengakses fitur akun.</small>
+        </p>
+        
+        <div class="action-buttons">
+            <form method="post" action="{% url 'account_logout' %}" style="display: inline;">
+                {% csrf_token %}
+                {{ form }}
+                <button class="logout-btn" type="submit">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Ya, Keluar
+                </button>
+            </form>
+            
+            <a href="{% url 'home' %}" class="cancel-btn">
+                <i class="fas fa-arrow-left"></i>
+                Batal
+            </a>
+        </div>
+    </div>
+    
+    <div class="farewell-message">
+        <p>Terima kasih telah menggunakan layanan kami. Sampai jumpa lagi! 👋</p>
+    </div>
+</div>
+
+<script>
+    // Auto-close messages after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto close messages after 3 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.message').forEach(function(message) {
+                message.style.display = 'none';
+            });
+        }, 3000);
+        
+        // Close button functionality
+        document.querySelectorAll('.close-message').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.closest('.message').style.display = 'none';
+            });
+        });
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,270 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<style>
+    .menu-header {
+        text-align: center;
+        margin: 2rem 0 3rem;
+        position: relative;
+    }
+    
+    .menu-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .menu-header h2::after {
+        content: "";
+        display: block;
+        width: 120px;
+        height: 3px;
+        background: linear-gradient(to right, #A52A2A, #C19A6B);
+        margin: 0.8rem auto;
+        border-radius: 2px;
+    }
+    
+    .categories-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 2rem 0 3rem;
+    }
+    
+    .category-btn {
+        background: #F5F5DC;
+        border: 2px solid #C19A6B;
+        border-radius: 50px;
+        padding: 0.7rem 1.8rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        color: #3D2B1F;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .category-btn:hover, .category-btn.active {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        transform: translateY(-3px);
+        border-color: #A52A2A;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+    
+    .menu-item {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .menu-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .image-container {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .menu-item:hover .image-container img {
+        transform: scale(1.05);
+    }
+    
+    .menu-details {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .menu-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+    
+    .menu-price {
+        font-size: 1.3rem;
+        color: #A52A2A;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .stock-status {
+        margin-top: auto;
+        font-weight: 500;
+        padding: 0.5rem;
+        text-align: center;
+        border-radius: 5px;
+    }
+    
+    .in-stock {
+        background: rgba(76, 175, 80, 0.15);
+        color: #2E7D32;
+    }
+    
+    .out-of-stock {
+        background: rgba(244, 67, 54, 0.15);
+        color: #C62828;
+    }
+    
+    .empty-menu {
+        text-align: center;
+        padding: 4rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: #3D2B1F;
+        max-width: 700px;
+        margin: 2rem auto;
+        background: #F5F5DC;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-top: 3px solid #C19A6B;
+    }
+    
+    .empty-menu i {
+        font-size: 3rem;
+        color: #C19A6B;
+        display: block;
+        margin-bottom: 1.5rem;
+    }
+    
+    .menu-divider {
+        text-align: center;
+        margin: 3rem 0;
+    }
+    
+    .menu-divider i {
+        font-size: 1.8rem;
+        color: #8B4513;
+        margin: 0 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .menu-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.8rem;
+        }
+        
+        .menu-header h2 {
+            font-size: 2.3rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .menu-grid {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+        }
+        
+        .menu-header h2 {
+            font-size: 2rem;
+        }
+        
+        .categories-container {
+            gap: 0.7rem;
+        }
+        
+        .category-btn {
+            padding: 0.6rem 1.4rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="menu-header">
+    <h2>Menu Ragazza Cafe</h2>
+    <p>Jelajahi kelezatan Italia dengan hidangan pilihan kami</p>
+</div>
+
+<div class="menu-divider">
+    <i class="fas fa-utensils"></i>
+    <i class="fas fa-pizza-slice"></i>
+    <i class="fas fa-coffee"></i>
+    <i class="fas fa-ice-cream"></i>
+</div>
+
+<div class="categories-container">
+    <strong style="font-family: 'Playfair Display', serif; font-size: 1.2rem; align-self: center;">Kategori:</strong>
+    {% for category in categories %}
+        <a href="?category={{ category.name }}">
+            <button class="category-btn {% if request.GET.category == category.name %}active{% endif %}">
+                {{ category.name }}
+            </button>
+        </a>
+    {% endfor %}
+</div>
+
+{% if menu_items %}
+    <div class="menu-grid">
+        {% for item in menu_items %}
+            <a href="{% url 'menu_detail' item.pk %}" class="menu-item">
+                <div class="image-container">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% else %}
+                        <div style="background: #F5F5DC; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-camera fa-3x" style="color: #C19A6B; opacity: 0.5;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="menu-details">
+                    <h3 class="menu-name">{{ item.name }}</h3>
+                    <div class="menu-price">Rp{{ item.price }}</div>
+                    <div class="stock-status {% if item.stock == 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                        {% if item.stock == 0 %}
+                            Stok Habis
+                        {% else %}
+                            Tersedia
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-menu">
+        <i class="fas fa-mug-hot"></i>
+        <p>Maaf, tidak ada menu yang tersedia pada kategori ini.</p>
+        <p style="margin-top: 1rem; font-size: 1.2rem;">Silakan pilih kategori lain atau kembali nanti.</p>
+    </div>
+{% endif %}
+
+<div class="menu-divider">
+    <i class="fas fa-wine-bottle"></i>
+    <i class="fas fa-cheese"></i>
+    <i class="fas fa-bread-slice"></i>
+    <i class="fas fa-apple-alt"></i>
+</div>
+{% endblock %}

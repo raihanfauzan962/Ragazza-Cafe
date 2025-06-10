@@ -1,0 +1,559 @@
+{% extends '_base.html' %}
+{% block content %}
+<style>
+    .detail-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .detail-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .item-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .item-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .item-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .image-container {
+        flex: 1;
+        min-width: 300px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F5F5DC;
+    }
+    
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .image-container:hover img {
+        transform: scale(1.05);
+    }
+    
+    .item-info {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .item-description {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #3D2B1F;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .price-stock {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #F5F5DC;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .price {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: #A52A2A;
+        font-weight: 700;
+    }
+    
+    .stock {
+        font-size: 1.2rem;
+        font-weight: 500;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+    }
+    
+    .in-stock {
+        background: rgba(76, 175, 80, 0.15);
+        color: #2E7D32;
+    }
+    
+    .out-of-stock {
+        background: rgba(244, 67, 54, 0.15);
+        color: #C62828;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        flex: 1;
+        min-width: 220px;
+        padding: 1.2rem;
+        border: none;
+        border-radius: 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .add-to-cart {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+    }
+    
+    .add-to-favorites {
+        background: linear-gradient(to right, #C19A6B, #8B4513);
+        color: white;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .action-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .action-btn i {
+        font-size: 1.4rem;
+    }
+    
+    .reviews-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px dashed #C19A6B;
+    }
+    
+    .reviews-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .reviews-header h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        color: #3D2B1F;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+    
+    .reviews-header h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(to right, #A52A2A, #C19A6B);
+    }
+    
+    .review-form {
+        background: #F5F5DC;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 3rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #3D2B1F;
+    }
+    
+    .form-group input, 
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #C19A6B;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        background: white;
+    }
+    
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .submit-review {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .submit-review:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .reviews-list {
+        margin-top: 2rem;
+    }
+    
+    .review-item {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #C19A6B;
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+        flex-wrap: wrap;
+    }
+    
+    .rating {
+        font-size: 1.2rem;
+        color: #FFC107;
+        letter-spacing: 2px;
+    }
+    
+    .reviewer {
+        font-weight: 600;
+        color: #3D2B1F;
+    }
+    
+    .review-date {
+        color: #777;
+        font-size: 0.9rem;
+    }
+    
+    .review-comment {
+        color: #3D2B1F;
+        line-height: 1.6;
+        padding-top: 0.8rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .no-reviews {
+        text-align: center;
+        padding: 2rem;
+        background: #F5F5DC;
+        border-radius: 15px;
+        color: #3D2B1F;
+        font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+        .item-header h2 {
+            font-size: 2.3rem;
+        }
+        
+        .detail-container {
+            padding: 1.5rem;
+        }
+        
+        .image-container {
+            height: 300px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .item-header h2 {
+            font-size: 2rem;
+        }
+        
+        .price-stock {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+
+    .message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 400px;
+    }
+    
+    .message {
+        padding: 1.2rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateX(120%);
+        animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 2.5s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .message::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+    }
+    
+    .success-message {
+        background: white;
+        color: #2E7D32;
+        border-left: 5px solid #4CAF50;
+    }
+    
+    .error-message {
+        background: white;
+        color: #C62828;
+        border-left: 5px solid #F44336;
+    }
+    
+    .message i {
+        font-size: 1.8rem;
+    }
+    
+    .message-content {
+        flex: 1;
+    }
+    
+    .message-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .message-text {
+        font-size: 0.95rem;
+    }
+    
+    .close-message {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+    
+    .close-message:hover {
+        opacity: 1;
+    }
+    
+    @keyframes slideIn {
+        to {
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(0) scale(0.95);
+        }
+    }
+</style>
+
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {% if 'success' in message.tags %}
+                    <i class="fas fa-check-circle"></i>
+                {% elif 'error' in message.tags %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
+                <div class="message-content">
+                    <div class="message-title">
+                        {% if 'success' in message.tags %}Sukses!{% elif 'error' in message.tags %}Error!{% endif %}
+                    </div>
+                    <div class="message-text">{{ message }}</div>
+                </div>
+                <button class="close-message">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script>
+    // Auto-close messages after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto close messages after 3 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.message').forEach(function(message) {
+                message.style.display = 'none';
+            });
+        }, 3000);
+        
+        // Close button functionality
+        document.querySelectorAll('.close-message').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.closest('.message').style.display = 'none';
+            });
+        });
+    });
+</script>
+
+<div class="detail-container">
+    <div class="item-header">
+        <h2>{{ item.name }}</h2>
+        <div class="decorative" style="margin: 1rem 0;">
+            <i class="fas fa-utensils"></i>
+            <i class="fas fa-coffee"></i>
+            <i class="fas fa-bread-slice"></i>
+            <i class="fas fa-wine-bottle"></i>
+        </div>
+    </div>
+    
+    <div class="item-content">
+        <div class="image-container">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+            {% else %}
+                <i class="fas fa-camera fa-5x" style="color: #C19A6B; opacity: 0.5;"></i>
+            {% endif %}
+        </div>
+        
+        <div class="item-info">
+            <p class="item-description">{{ item.description }}</p>
+            
+            <div class="price-stock">
+                <div class="price">Rp{{ item.price }}</div>
+                <div class="stock {% if item.stock == 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                    Sisa Stok: {{ item.stock }}
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                {% if item.stock > 0 %}
+                    <form method="post" action="{% url 'add_to_cart' item.pk %}" class="action-form" style="flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Tambah ke Keranjang
+                        </button>
+                    </form>
+                {% endif %}
+                
+                <form method="post" action="{% url 'add_to_favorites' item.pk %}" class="action-form" style="flex: 1;">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn add-to-favorites">
+                        <i class="fas fa-heart"></i> Tambahkan ke Favorit
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="reviews-section">
+        <div class="reviews-header">
+            <h3>Rating & Ulasan</h3>
+        </div>
+        
+        <div class="review-form">
+            <form method="post" action="{% url 'add_review' item.pk %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_rating">Rating:</label>
+                    {{ review_form.rating }}
+                </div>
+                <div class="form-group">
+                    <label for="id_comment">Ulasan Anda:</label>
+                    {{ review_form.comment }}
+                </div>
+                <button type="submit" class="submit-review">
+                    <i class="fas fa-paper-plane"></i> Kirim Review
+                </button>
+            </form>
+        </div>
+        
+        <div class="reviews-list">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="rating">
+                                {% with ''|center:review.rating as range %}
+                                    {% for _ in range %}⭐{% endfor %}
+                                {% endwith %}
+                            </div>
+                            <div class="reviewer">{{ review.user }}</div>
+                            <div class="review-date">{{ review.created_at|date:"d M Y" }}</div>
+                        </div>
+                        <div class="review-comment">{{ review.comment }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">
+                    <p>Belum ada ulasan untuk menu ini. Jadilah yang pertama memberikan ulasan!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

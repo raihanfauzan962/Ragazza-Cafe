@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ragazza Cafe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #A52A2A;
+            --secondary: #8B4513;
+            --accent: #C19A6B;
+            --light: #F5F5DC;
+            --dark: #3D2B1F;
+            --text: #333333;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23F5F5DC"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23C19A6B" stroke-width="0.5" stroke-opacity="0.1"/></svg>');
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4.5rem;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin: 0.5rem 0 1.5rem;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        h1::after {
+            content: "";
+            display: block;
+            width: 150px;
+            height: 2px;
+            background: var(--accent);
+            margin: 0.5rem auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        nav a {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.25);
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        nav a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav a:hover::before {
+            width: 100%;
+        }
+        
+        nav a i {
+            font-size: 1.2rem;
+        }
+        
+        main {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .coffee-divider {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .coffee-divider::before,
+        .coffee-divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        
+        .coffee-divider::before {
+            left: 0;
+        }
+        
+        .coffee-divider::after {
+            right: 0;
+        }
+        
+        .coffee-divider i {
+            color: var(--secondary);
+            font-size: 1.8rem;
+            background: var(--light);
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        footer {
+            background: var(--dark);
+            color: var(--light);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+        
+        footer p {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3.5rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                width: 80%;
+                justify-content: center;
+            }
+            
+            main {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ragazza Cafe</h1>
+        <nav>
+            {% if user.is_authenticated %}
+                <a href="{% url 'menu_list' %}"><i class="fas fa-utensils"></i> Menu</a>
+                <a href="{% url 'favorites' %}"><i class="fas fa-heart"></i> Favorit</a>
+                <a href="{% url 'order_list' %}"><i class="fas fa-receipt"></i> Pesanan</a>
+                <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i> Keranjang</a>
+                <a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            {% else %}
+                <a href="{% url 'account_login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="{% url 'account_signup' %}"><i class="fas fa-user-plus"></i> Signup</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        <div class="coffee-divider">
+            <i class="fas fa-coffee"></i>
+        </div>
+        
+        {% block content %}{% endblock %}
+        
+        <div class="coffee-divider">
+            <i class="fas fa-coffee"></i>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Ragazza Cafe &copy; 2025 - Made with love by Raihan Fauzan | Nikmati secangkir kopi terbaik dengan suasana Italia yang hangat dan autentik</p>
+    </footer>
+</body>
+</html>
