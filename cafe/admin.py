@@ -5,7 +5,6 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 import datetime
 
-
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name']
@@ -21,6 +20,30 @@ class MenuItemAdmin(admin.ModelAdmin):
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
+
+def export_invoice(modeladmin, request, queryset):
+    if queryset.count() != 1:
+        return HttpResponse("Pilih satu pesanan saja untuk mencetak invoice.", status=400)
+
+    order = queryset.first()
+    items = order.items.all()
+    total = sum([item.get_total_price() for item in items])
+
+    context = {
+        'order': order,
+        'items': items,
+        'total': total,
+        'generated_at': datetime.datetime.now()
+    }
+
+    html = render_to_string('admin/invoice.html', context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_order_{order.id}.pdf"'
+    pisa.CreatePDF(html, dest=response)
+    return response
+
+export_invoice.short_description = "Export Invoice to PDF"
+
 
 def export_sales_report(modeladmin, request, queryset):
     items = {}
@@ -56,7 +79,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ['payment_status', 'order_status', 'created_at']
     search_fields = ['user__email']
     inlines = [OrderItemInline]
-    actions = [export_sales_report]
+    actions = [export_sales_report, export_invoice]
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
