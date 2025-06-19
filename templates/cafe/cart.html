@@ -344,7 +344,12 @@
                                 Jumlah: {{ entry.quantity }}
                             </div>
                             <div class="subtotal">
-                                Rp{{ entry.subtotal }}
+                                Rp{{ entry.subtotal_after_discount|floatformat:0 }}
+                                {% if entry.discount > 0 %}
+                                    <small style="color: #C19A6B; display: block; font-size: 0.9rem;">
+                                        (Diskon Rp{{ entry.discount|floatformat:0 }})
+                                    </small>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -358,7 +363,7 @@
             </div>
             <div class="total-amount">
                 <div class="total-label">Total Pembayaran</div>
-                <div class="total-price">Rp{{ total }}</div>
+                <div class="total-price">Rp{{ total|floatformat:0 }}</div>
             </div>
             <div class="checkout-section">
                 <a href="{% url 'checkout' %}" class="checkout-btn">

@@ -261,6 +261,34 @@
     </div>
 {% endif %}
 
+{% if recommendations %}
+    <div class="menu-header" style="margin-top: 4rem;">
+        <h2>Rekomendasi Untuk Anda</h2>
+        <p>Dipilih berdasarkan pesanan Anda sebelumnya</p>
+    </div>
+
+    <div class="menu-grid">
+        {% for item in recommendations %}
+            <a href="{% url 'menu_detail' item.pk %}" class="menu-item">
+                <div class="image-container">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% else %}
+                        <div style="background: #F5F5DC; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-camera fa-3x" style="color: #C19A6B; opacity: 0.5;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="menu-details">
+                    <h3 class="menu-name">{{ item.name }}</h3>
+                    <div class="menu-price">Rp{{ item.price }}</div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
 <div class="menu-divider">
     <i class="fas fa-wine-bottle"></i>
     <i class="fas fa-cheese"></i>

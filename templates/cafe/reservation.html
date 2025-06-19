@@ -1,0 +1,383 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<style>
+    .reservation-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .reservation-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #A52A2A, #C19A6B, #A52A2A);
+    }
+    
+    .reservation-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px dashed #C19A6B;
+    }
+    
+    .reservation-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #3D2B1F;
+        margin-bottom: 0.5rem;
+    }
+    
+    .reservation-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .form-container {
+        flex: 1;
+        min-width: 300px;
+        background: #F5F5DC;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #3D2B1F;
+    }
+    
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #C19A6B;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        background: white;
+    }
+    
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .submit-reservation {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .submit-reservation:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .reservations-list {
+        flex: 1;
+        min-width: 300px;
+        background: #F5F5DC;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        overflow-x: auto;
+    }
+    
+    .reservations-list h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        color: #3D2B1F;
+        position: relative;
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .reservations-list h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(to right, #A52A2A, #C19A6B);
+    }
+    
+    .reservation-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .reservation-table th,
+    .reservation-table td {
+        padding: 1rem;
+        border: 1px solid #C19A6B;
+        text-align: center;
+        color: #3D2B1F;
+    }
+    
+    .reservation-table th {
+        background: linear-gradient(to right, #A52A2A, #8B4513);
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+    }
+    
+    .reservation-table td {
+        background: white;
+    }
+    
+    .no-reservations {
+        text-align: center;
+        padding: 2rem;
+        background: #F5F5DC;
+        border-radius: 15px;
+        color: #3D2B1F;
+        font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+        .reservation-header h2 {
+            font-size: 2.3rem;
+        }
+        
+        .reservation-container {
+            padding: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .reservation-header h2 {
+            font-size: 2rem;
+        }
+        
+        .reservation-content {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    }
+    
+    .message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 400px;
+    }
+    
+    .message {
+        padding: 1.2rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateX(120%);
+        animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 2.5s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .message::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+    }
+    
+    .success-message {
+        background: white;
+        color: #2E7D32;
+        border-left: 5px solid #4CAF50;
+    }
+    
+    .error-message {
+        background: white;
+        color: #C62828;
+        border-left: 5px solid #F44336;
+    }
+    
+    .message i {
+        font-size: 1.8rem;
+    }
+    
+    .message-content {
+        flex: 1;
+    }
+    
+    .message-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .message-text {
+        font-size: 0.95rem;
+    }
+    
+    .close-message {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+    
+    .close-message:hover {
+        opacity: 1;
+    }
+    
+    @keyframes slideIn {
+        to {
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(0) scale(0.95);
+        }
+    }
+</style>
+
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {% if 'success' in message.tags %}
+                    <i class="fas fa-check-circle"></i>
+                {% elif 'error' in message.tags %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
+                <div class="message-content">
+                    <div class="message-title">
+                        {% if 'success' in message.tags %}Sukses!{% elif 'error' in message.tags %}Error!{% endif %}
+                    </div>
+                    <div class="message-text">{{ message }}</div>
+                </div>
+                <button class="close-message">×</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            document.querySelectorAll('.message').forEach(function(message) {
+                message.style.display = 'none';
+            });
+        }, 3000);
+        
+        document.querySelectorAll('.close-message').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.closest('.message').style.display = 'none';
+            });
+        });
+    });
+</script>
+
+<div class="reservation-container">
+    <div class="reservation-header">
+        <h2>Reservasi Meja</h2>
+        <div class="decorative" style="margin: 1rem 0;">
+            <i class="fas fa-utensils"></i>
+            <i class="fas fa-coffee"></i>
+            <i class="fas fa-bread-slice"></i>
+            <i class="fas fa-wine-bottle"></i>
+        </div>
+    </div>
+    
+    <div class="reservation-content">
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.table.id_for_label }}">Nomor Meja</label>
+                    {{ form.table }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.reservation_date.id_for_label }}">Tanggal</label>
+                    {{ form.reservation_date }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.reservation_time.id_for_label }}">Waktu</label>
+                    {{ form.reservation_time }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.note.id_for_label }}">Catatan (opsional)</label>
+                    {{ form.note }}
+                </div>
+                <button type="submit" class="submit-reservation">
+                    <i class="fas fa-paper-plane"></i> Reservasi
+                </button>
+            </form>
+        </div>
+        
+        <div class="reservations-list">
+            <h3>Daftar Reservasi Anda</h3>
+            {% if reservations %}
+                <table class="reservation-table">
+                    <thead>
+                        <tr>
+                            <th>Meja</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
+                            <th>Catatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in reservations %}
+                            <tr>
+                                <td>{{ r.table.table_number }}</td>
+                                <td>{{ r.reservation_date }}</td>
+                                <td>{{ r.reservation_time }}</td>
+                                <td>{{ r.note|default:"-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-reservations">
+                    <p>Belum ada reservasi.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
